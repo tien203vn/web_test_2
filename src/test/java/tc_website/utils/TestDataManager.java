@@ -88,6 +88,51 @@ public class TestDataManager {
     }
     
     /**
+     * Get logout test data
+     * @param testCase Test case identifier
+     * @return Map containing logout data
+     */
+    public Map<String, String> getLogoutData(String testCase) {
+        return getTestData("logout", testCase);
+    }
+    
+    /**
+     * Get account test data
+     * @param accountID Account identifier
+     * @return Map containing account data
+     */
+    public Map<String, String> getAccountData(String accountID) {
+        return getTestData("accounts", accountID);
+    }
+    
+    /**
+     * Get cart test data
+     * @param testCase Test case identifier
+     * @return Map containing cart data
+     */
+    public Map<String, String> getCartData(String testCase) {
+        return getTestData("cart", testCase);
+    }
+    
+    /**
+     * Get payment test data
+     * @param testCase Test case identifier
+     * @return Map containing payment data
+     */
+    public Map<String, String> getPaymentData(String testCase) {
+        return getTestData("payment", testCase);
+    }
+    
+    /**
+     * Get product test data
+     * @param testCase Test case identifier
+     * @return Map containing product data
+     */
+    public Map<String, String> getProductData(String testCase) {
+        return getTestData("product", testCase);
+    }
+    
+    /**
      * Generic method to get test data from any data source
      * @param dataType Type of data (login, registration, etc.)
      * @param testCase Test case identifier
@@ -154,6 +199,34 @@ public class TestDataManager {
         }
         
         return List.of();
+    }
+    
+    /**
+     * Get payment test data
+     * @param testCase Test case identifier
+     * @return Map containing payment data
+     */
+//    public Map<String, String> getPaymentData(String testCase) {
+//        return getTestData("payment", testCase);
+//    }
+//
+    
+    /**
+     * Get login test data
+     * @param testCase Test case identifier  
+     * @return Map containing login data
+     */
+//    public Map<String, String> getLoginData(String testCase) {
+//        return getTestData("login", testCase);
+//    }
+//
+    /**
+     * Get register test data
+     * @param testCase Test case identifier  
+     * @return Map containing register data
+     */
+    public Map<String, String> getRegisterData(String testCase) {
+        return getTestData("register", testCase);
     }
     
     /**

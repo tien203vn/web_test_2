@@ -4,24 +4,27 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 import java.util.List;
-
-import javax.sound.midi.Track;
+import java.util.Map;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import tc_website.utils.TestDataManager;
 
-public class tc_cartManagement {
+public class tc_cartManagement extends BaseTest {
+	
+	private TestDataManager testDataManager;
+
+	@BeforeMethod
+	@Override
+	public void setUp() throws InterruptedException {
+		super.setUp();
+		testDataManager = TestDataManager.getInstance();
+	}
 	
 	public void login(String mail, String pw) {
 		// Find and fill name
@@ -44,25 +47,6 @@ public class tc_cartManagement {
         String cleaned = price.replace(".", "").replace("đ", "").trim();
         long value = Long.parseLong(cleaned);
         return value;
-	}
-	
-	WebDriver driver = null;
-	
-	@BeforeTest
-	public void beforeTest() throws InterruptedException {
-
-		System.setProperty("webdriver.chrome.driver", "D:\\Chromedriver\\chromedriver.exe");
-
-		driver = new ChromeDriver();
-
-		// 1 - Maximize browser
-		driver.manage().window().maximize();
-
-		// 2 - Navigate to URL
-		driver.navigate().to("https://nguyetviet.io.vn");
-
-		// Wait web load
-		Thread.sleep(2000);
 	}
 	
 	//Add cart logout
@@ -130,12 +114,13 @@ public class tc_cartManagement {
 	//View cart without products
 	@Test(priority = 1,enabled = true)
 	public void gh1_viewEmptyCart() throws InterruptedException {
+		Map<String, String> testData = testDataManager.getCartData("tk1_addToCartSuccess");
 		
 		WebElement btn_home_login = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/header[1]/div[1]/div[3]/a[2]/span[1]/*[name()='svg'][1]"));
 		btn_home_login.click();
 		Thread.sleep(2000);
 		
-		login("nguyenyen2003+4@gmail.com", "Yen12345");
+		login(testData.get("TestEmail"), testData.get("Password"));
 		btn_Login_click();
 		Thread.sleep(1000);
 		WebElement btn_closeMessage = driver.findElement(By.xpath("//button[@aria-label='close']//*[name()='svg']"));
@@ -312,12 +297,4 @@ public class tc_cartManagement {
 	}
 	
 	
-	@AfterTest
-	public void afterTest() throws InterruptedException {
-
-		Thread.sleep(2000);
-		driver.quit();
-
-	}
-
 }

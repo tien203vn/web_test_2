@@ -1,15 +1,41 @@
 package tc_website;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import tc_website.utils.TestDataManager;
 
-public class tc_updateProfile {
+import java.util.Map;
+
+public class tc_updateProfile extends BaseTest {
+
+	private TestDataManager testDataManager;
+
+	@BeforeMethod
+	@Override
+	public void setUp() throws InterruptedException {
+		super.setUp();
+		testDataManager = TestDataManager.getInstance();
+		
+		// Login với test data
+		Map<String, String> loginData = testDataManager.getProfileData("tk1_updateProfileSuccess");
+		login(loginData.get("Email"), "Yen12345");
+		btn_Login_click();
+		Thread.sleep(1000);
+		
+		WebElement btn_closeMessage = driver.findElement(By.xpath("//button[@aria-label='close']//*[name()='svg']"));
+		btn_closeMessage.click();
+		Thread.sleep(1000);
+
+		// Find elements
+		WebElement btn_home_profile = driver.findElement(By.xpath("//a[@href='/profile/me']"));
+
+		btn_home_profile.click();
+		
+		Thread.sleep(1000);
+	}
 	public void login(String mail, String pw) {
 		// Find and fill name
 		WebElement inputEmail = driver.findElement(By.id(":r0:"));
@@ -27,45 +53,14 @@ public class tc_updateProfile {
 		Thread.sleep(2000);
 	}
 
-	WebDriver driver = null;
-
-	@BeforeMethod
-	public void beforeMethod() throws InterruptedException {
-
-		System.setProperty("webdriver.chrome.driver", "D:\\Chromedriver\\chromedriver.exe");
-
-		driver = new ChromeDriver();
-
-		// 1 - Maximize browser
-		driver.manage().window().maximize();
-
-		// 2 - Navigate to url
-		driver.navigate().to("https://nguyetviet.io.vn/auth/login");
-
-		// Wait web load
-		Thread.sleep(2000);
-
-		login("nguyenyen2003+7@gmail.com", "Yen12345");
-		btn_Login_click();
-		Thread.sleep(1000);
-		WebElement btn_closeMessage = driver.findElement(By.xpath("//button[@aria-label='close']//*[name()='svg']"));
-		btn_closeMessage.click();
-		Thread.sleep(1000);
-
-		// Find elements
-		WebElement btn_home_profile = driver.findElement(By.xpath("//a[@href='/profile/me']"));
-
-		btn_home_profile.click();
-		
-		Thread.sleep(1000);
-
-	}
-
 	@Test(priority = 0, enabled = true)
 	public void pf1_updateProfile() throws InterruptedException {
+		Map<String, String> testData = testDataManager.getProfileData("tk1_updateProfileSuccess");
+		
 		//find and fill Phone number
 		WebElement txtSDT = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/main[1]/section[1]/div[1]/form[1]/div[1]/div[3]/div[1]/div[1]/input[1]"));
-		txtSDT.sendKeys("0322488825");
+		txtSDT.clear();
+		txtSDT.sendKeys(testData.get("Phone"));
 		
 		//find and fill Province
 		WebElement txtTinh = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/main[1]/section[1]/div[1]/form[1]/div[1]/div[4]/div[1]/div[1]/div[1]/input[1]"));
@@ -96,7 +91,8 @@ public class tc_updateProfile {
 		
 		//find and fill Street
 		WebElement txtDuong = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/main[1]/section[1]/div[1]/form[1]/div[1]/div[7]/div[1]/div[1]/input[1]"));
-		txtDuong.sendKeys("Đường 5");
+		txtDuong.clear();
+		txtDuong.sendKeys(testData.get("Address"));
 		Thread.sleep(1000);
 		
 		//click Save
@@ -106,14 +102,6 @@ public class tc_updateProfile {
 		
 		Assert.assertTrue(driver.findElement(By.xpath("//div[contains(text(),'Cập nhật thông tin cá nhân thành công.')]")).isDisplayed());
 		
-	}
-
-	@AfterMethod
-	public void afterMethod() throws InterruptedException {
-
-		Thread.sleep(2000);
-		driver.quit();
-
 	}
 
 }

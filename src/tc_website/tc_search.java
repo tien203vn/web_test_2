@@ -1,21 +1,34 @@
 package tc_website;
 
-import java.lang.invoke.StringConcatFactory;
 import java.util.List;
+import java.util.Map;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import tc_website.utils.TestDataManager;
 
-public class tc_search {
+public class tc_search extends BaseTest {
 
-	WebDriver driver = null;
+	private TestDataManager testDataManager;
+
+	@BeforeMethod
+	@Override
+	public void setUp() throws InterruptedException {
+		super.setUp();
+		testDataManager = TestDataManager.getInstance();
+		
+		// Navigate to products page
+		driver.navigate().to("https://nguyetviet.io.vn");
+		Thread.sleep(2000);
+		
+		WebElement btn_home_product = driver.findElement(By.xpath("//a[@href='/products']"));
+		btn_home_product.click();
+		Thread.sleep(2000);
+	}
 	
 	public void btnHuy() throws InterruptedException {
 		WebElement btn_HuyElement = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/main[1]/div[1]/form[1]/div[1]/div[1]/div[1]/div[1]/div[5]/button[2]/span[1]"));
@@ -29,39 +42,16 @@ public class tc_search {
 	
 	public long convertPrice(String price) {
         String cleaned = price.replace(".", "").replace("đ", "").trim();
-        long value = Long.parseLong(cleaned);
-        return value;
-	}
-	
-	
-	@BeforeTest
-	public void beforeTest() throws InterruptedException {
-
-		System.setProperty("webdriver.chrome.driver", "D:\\Chromedriver\\chromedriver.exe");
-
-		driver = new ChromeDriver();
-
-		// 1 - Maximize browser
-		driver.manage().window().maximize();
-
-		// 2 - Navigate to URL
-		driver.navigate().to("https://nguyetviet.io.vn");
-
-		// Wait web load
-		Thread.sleep(2000);
-		
-		WebElement btn_home_product = driver.findElement(By.xpath("//a[@href='/products']"));
-		btn_home_product.click();
-		Thread.sleep(2000);
-
+        return Long.parseLong(cleaned);
 	}
 	
 	//Search by keyword -> has products 
 	@Test(priority = 0,enabled = true)
 	public void tk1_searchByCorrectName() throws InterruptedException {
+		Map<String, String> testData = testDataManager.getSearchData("tk1_searchByCorrectName");
 		
 		WebElement txtSearchByName = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/main[1]/div[1]/form[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/input[1]"));
-		String keySearch = "bánh dẻo";
+		String keySearch = testData.get("SearchKeyword");
 		txtSearchByName.sendKeys(keySearch);
 		
 		WebElement btnSearch = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/main[1]/div[1]/form[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/button[1]"));
@@ -84,11 +74,12 @@ public class tc_search {
 	//Search by keyword -> no product
 	@Test(priority = 1,enabled = true)
 	public void tk2_searchByIncorrectName() throws InterruptedException {
+		Map<String, String> testData = testDataManager.getSearchData("tk2_searchByIncorrectName");
 		
 		btnHuy();
 		
 		WebElement txtSearchByName = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/main[1]/div[1]/form[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/input[1]"));
-		String keySearch = "bánh bò";
+		String keySearch = testData.get("SearchKeyword");
 		txtSearchByName.sendKeys(keySearch);
 		
 		WebElement btnSearch = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/main[1]/div[1]/form[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/button[1]"));
@@ -106,13 +97,14 @@ public class tc_search {
 	//Search by price
 	@Test(priority = 2,enabled = true)
 	public void tk3_searchByPrice() throws InterruptedException {
+		Map<String, String> testData = testDataManager.getSearchData("tk3_searchByPrice");
 		
 		btnHuy();
 		WebElement price1Element = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/main[1]/div[1]/form[1]/div[1]/div[1]/div[1]/div[1]/div[3]/div[3]/div[1]/div[1]/div[1]/div[1]/input[1]"));
-		price1Element.sendKeys("400000");
+		price1Element.sendKeys(testData.get("MinPrice"));
 		
 		WebElement price2Element = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/main[1]/div[1]/form[1]/div[1]/div[1]/div[1]/div[1]/div[3]/div[3]/div[3]/div[1]/div[1]/div[1]/input[1]"));
-		price2Element.sendKeys("600000");
+		price2Element.sendKeys(testData.get("MaxPrice"));
 		
 		WebElement btnSearch = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/main[1]/div[1]/form[1]/div[1]/div[1]/div[1]/div[1]/div[3]/button[1]"));
 		btnSearch.click();
@@ -122,11 +114,13 @@ public class tc_search {
 		js.executeScript("window.scrollBy(0,450)");
 		
 		 List<WebElement> elements = driver.findElements(By.cssSelector(".text-xl.font-bold.text-dark"));
+		 long minPrice = Long.parseLong(testData.get("MinPrice"));
+		 long maxPrice = Long.parseLong(testData.get("MaxPrice"));
 		 
 		 for (WebElement element : elements) {
 	           long priceElement = convertPrice(element.getText());
 	           System.out.print(priceElement);
-	           Assert.assertTrue(priceElement > 400000 && priceElement < 600000);
+	           Assert.assertTrue(priceElement > minPrice && priceElement < maxPrice);
 	     }
 		 Thread.sleep(3000);
 	}
@@ -134,6 +128,7 @@ public class tc_search {
 	//Search by brand
 	@Test(priority = 3,enabled = true)
 	public void tk4_searchByBrand() throws InterruptedException {
+		Map<String, String> testData = testDataManager.getSearchData("tk4_searchByBrand");
 		
 		btnHuy();
 		
@@ -158,10 +153,6 @@ public class tc_search {
 	     }
 		 Thread.sleep(3000);
 	}
-	
-	@AfterTest
-	public void afterTest() throws InterruptedException {
-		Thread.sleep(2000);
-		driver.quit();
-	}
+
+}
 }

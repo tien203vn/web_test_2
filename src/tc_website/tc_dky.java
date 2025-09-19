@@ -1,15 +1,18 @@
 package tc_website;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import tc_website.base.BaseTest;
+import tc_website.utils.TestDataManager;
 
-public class tc_dky {
+import java.util.Map;
+
+public class tc_dky extends BaseTest {
+	
+	private TestDataManager testDataManager = TestDataManager.getInstance();
 
 	public void registerAccount(String name, String email, String pw, String cfPw) {
 		
@@ -37,42 +40,26 @@ public class tc_dky {
 		btn_submit_dky.click();
 		Thread.sleep(2000);
 	}
-
-	WebDriver driver = null;
-
+	
 	@BeforeMethod
-	public void beforeMethod() throws InterruptedException {
-
-		System.setProperty("webdriver.chrome.driver", "D:\\Chromedriver\\chromedriver.exe");
-
-		driver = new ChromeDriver();
-
-		// 1 - Maximize browser
-		driver.manage().window().maximize();
-
-		// 2 - Navigate to url
+	public void setupRegisterTest() throws InterruptedException {
+		// 1 - Navigate to homepage
 		driver.navigate().to("https://nguyetviet.io.vn");
-
-		// Wait web load
 		Thread.sleep(2000);
 
-		// Find elements
+		// 2 - Navigate to register page
 		WebElement btn_dky1 = driver.findElement(By.xpath("//a[@href='/auth/sign-up']"));
-
-		// WebElement btn_dky1 =
-		// driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/header[1]/div[1]/div[3]/a[3]/span[1]"));
-
 		btn_dky1.click();
-
 		Thread.sleep(2000);
 	}
 
 	// Register successfully
 	@Test(priority = 0, enabled = true)
 	public void dk1_registerSuccessfully() throws InterruptedException {
+		Map<String, String> testData = testDataManager.getRegisterData("tk1_registerSuccess");
 
 		// Fill all input
-		registerAccount("Nguyen Thi Hai Yen", "nguyenyen2003+15@gmail.com", "Yen12345", "Yen12345");
+		registerAccount(testData.get("Name"), testData.get("Email"), testData.get("Password"), testData.get("ConfirmPassword"));
 
 		Thread.sleep(2000);
 
@@ -245,13 +232,5 @@ public class tc_dky {
 		Thread.sleep(1000);
 		Assert.assertTrue(driver.findElement(By.xpath("//div[contains(text(),'Mật khẩu phải chứa 1 ký tự và 1 số')]"))
 				.isDisplayed());
-	}
-
-	@AfterMethod
-	public void afterMethod() throws InterruptedException {
-
-		Thread.sleep(2000);
-		driver.quit();
-
 	}
 }

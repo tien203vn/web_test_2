@@ -1,18 +1,21 @@
 package tc_website;
 
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-public class tc_payment {
+import tc_website.base.BaseTest;
+import tc_website.utils.TestDataManager;
+
+import java.util.Map;
+
+public class tc_payment extends BaseTest {
+	
+	private TestDataManager testDataManager = TestDataManager.getInstance();
 	
 	public void login(String mail, String pw) {
 		// Find and fill name
@@ -105,20 +108,10 @@ public class tc_payment {
 	
 	WebDriver driver = null;
 	
-	@BeforeTest
-	public void beforeTest() throws InterruptedException {
-
-		System.setProperty("webdriver.chrome.driver", "D:\\Chromedriver\\chromedriver.exe");
-
-		driver = new ChromeDriver();
-
-		// 1 - Maximize browser
-		driver.manage().window().maximize();
-
-		// 2 - Navigate to URL
+	@BeforeMethod
+	public void setupPaymentTest() throws InterruptedException {
+		// 1 - Navigate to homepage
 		driver.navigate().to("https://nguyetviet.io.vn");
-
-		// Wait web load
 		Thread.sleep(2000);
 	}
 	
@@ -127,11 +120,13 @@ public class tc_payment {
 	//Pay in cash
 	@Test(priority = 0, enabled = true)
 	public void tt1_payInCash() throws InterruptedException {
+		Map<String, String> testData = testDataManager.getPaymentData("tk1_paymentSuccess");
+		
 		WebElement btn_home_login = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/header[1]/div[1]/div[3]/a[2]/span[1]/*[name()='svg'][1]"));
 		btn_home_login.click();
 		Thread.sleep(2000);
 		
-		login("nguyenyen2003+16@gmail.com", "Yen12345");
+		login(testData.get("TestEmail"), "Yen12345");
 		btn_Login_click();
 		Thread.sleep(1000);
 		WebElement btn_closeMessage = driver.findElement(By.xpath("//button[@aria-label='close']//*[name()='svg']"));
@@ -147,7 +142,7 @@ public class tc_payment {
 		btn_pay.click();
 		Thread.sleep(2000);
 		
-		thongTinThanhToan("01234567899", "Yen Nguyen", "01234567899", 1);
+		thongTinThanhToan(testData.get("CardNumber"), testData.get("CardHolderName"), testData.get("CardNumber"), 1);
 		Thread.sleep(2000);
 		
 		btnThanhToan();
@@ -170,12 +165,12 @@ public class tc_payment {
 		WebElement btnCloseCartElement = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/header[1]/div[3]/div[1]/div[1]/button[1]"));
 		btnCloseCartElement.click();
 		Thread.sleep(3000);
-		
 	}
 	
 	// Pay with Momo
 	@Test(priority = 1, enabled = true)
 	public void tt2_payWithMomo() throws InterruptedException {
+		Map<String, String> testData = testDataManager.getPaymentData("tk1_paymentSuccess");
 		
 		WebElement btn_home_product = driver.findElement(By.xpath("//a[@href='/products']"));
 		btn_home_product.click();
@@ -210,7 +205,7 @@ public class tc_payment {
 		btn_pay.click();
 		Thread.sleep(2000);
 
-		thongTinThanhToan("01234567899", "Yen Nguyen", "01234567899", 2);
+		thongTinThanhToan(testData.get("CardNumber"), testData.get("CardHolderName"), testData.get("CardNumber"), 2);
 		Thread.sleep(2000);
 
 		String firstTab = driver.getWindowHandle();
@@ -244,6 +239,7 @@ public class tc_payment {
 	// Pay with Zalopay
 	@Test(priority = 2, enabled = true)
 	public void tt3_payWithZalopay() throws InterruptedException {
+		Map<String, String> testData = testDataManager.getPaymentData("tk1_paymentSuccess");
 
 		WebElement btn_home_product = driver.findElement(By.xpath("//a[@href='/products']"));
 		btn_home_product.click();
@@ -280,7 +276,7 @@ public class tc_payment {
 		btn_pay.click();
 		Thread.sleep(2000);
 
-		thongTinThanhToan("01234567899", "Yen Nguyen", "01234567899", 3);
+		thongTinThanhToan(testData.get("CardNumber"), testData.get("CardHolderName"), testData.get("CardNumber"), 3);
 		Thread.sleep(2000);
 
 		String firstTab = driver.getWindowHandle();
@@ -315,10 +311,6 @@ public class tc_payment {
 				.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/header[1]/div[3]/div[1]/div[1]/button[1]"));
 		btnCloseCartElement.click();
 		Thread.sleep(3000);
-	}
-	
-	@AfterTest
-	public void afterTest() throws InterruptedException {
 		
 		// View your orders
 		WebElement btn_home_profile = driver.findElement(By.xpath("//a[@href='/profile/me']"));
@@ -328,7 +320,6 @@ public class tc_payment {
 		WebElement viewOrders = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/main[1]/aside[1]/nav[1]/div[2]/ul[1]/li[1]/a[1]/span[2]"));
 		viewOrders.click();
 		Thread.sleep(6000);
-		driver.quit();
 	}
 
 }

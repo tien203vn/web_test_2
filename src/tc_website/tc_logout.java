@@ -1,14 +1,38 @@
 package tc_website;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-public class tc_logout {
+import tc_website.utils.TestDataManager;
+
+import java.util.Map;
+
+public class tc_logout extends BaseTest {
+
+	private TestDataManager testDataManager;
+
+	@BeforeMethod
+	@Override
+	public void setUp() throws InterruptedException {
+		super.setUp();
+		testDataManager = TestDataManager.getInstance();
+		
+		// Login với test data
+		Map<String, String> loginData = testDataManager.getLogoutData("tk1_logoutSuccess");
+		login(loginData.get("Username"), loginData.get("Password"));
+		btn_Login_click();
+		Thread.sleep(1000);
+		
+		WebElement btn_closeMessage = driver.findElement(By.xpath("//button[@aria-label='close']//*[name()='svg']"));
+		btn_closeMessage.click();
+		Thread.sleep(1000);
+		
+		driver.navigate().to("https://nguyetviet.io.vn/profile/me");
+		
+		Thread.sleep(1000);
+	}
 	
 	public void login(String mail, String pw) {
 		// Find and fill name
@@ -27,39 +51,6 @@ public class tc_logout {
 		Thread.sleep(2000);
 	}
 
-	WebDriver driver = null;
-
-	@BeforeMethod
-	public void beforeMethod() throws InterruptedException {
-
-		System.setProperty("webdriver.chrome.driver", "D:\\Chromedriver\\chromedriver.exe");
-
-		driver = new ChromeDriver();
-
-		// 1 - Maximize browser
-		driver.manage().window().maximize();
-
-		// 2 - Navigate to url
-		driver.navigate().to("https://nguyetviet.io.vn/auth/login");
-
-		// Wait web load
-		Thread.sleep(2000);
-		
-		login("nguyenyen2003+5@gmail.com", "Yen12345");
-		btn_Login_click();
-		Thread.sleep(1000);
-		WebElement btn_closeMessage = driver.findElement(By.xpath("//button[@aria-label='close']//*[name()='svg']"));
-		btn_closeMessage.click();
-		Thread.sleep(1000);
-		
-		driver.navigate().to("https://nguyetviet.io.vn/profile/me");
-		
-		Thread.sleep(1000);
-	}
-
-
-
-
 	@Test(priority = 0, enabled = true)
 	public void dx1_logoutSuccessfully() throws InterruptedException {
 		
@@ -68,14 +59,6 @@ public class tc_logout {
 		Thread.sleep(2000);
 		Assert.assertTrue(driver.findElement(By.xpath("//div[contains(text(),'Đăng xuất thành công')]")).isDisplayed());
 		
-	}
-	
-	@AfterMethod
-	public void afterMethod() throws InterruptedException {
-
-		Thread.sleep(2000);
-		driver.quit();
-
 	}
 
 }

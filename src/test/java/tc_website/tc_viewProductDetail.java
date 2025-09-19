@@ -2,16 +2,19 @@ package tc_website;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import tc_website.utils.TestDataManager;
 
-public class tc_viewProductDetail {
+import java.util.Map;
+
+public class tc_viewProductDetail extends BaseTest {
+
+	private TestDataManager testDataManager;
 	public void login(String mail, String pw) {
 		// Find and fill name
 		WebElement inputEmail = driver.findElement(By.id(":r0:"));
@@ -29,24 +32,16 @@ public class tc_viewProductDetail {
 		Thread.sleep(2000);
 	}
 
-	WebDriver driver = null;
-
+	@Override
 	@BeforeMethod
-	public void beforeMethod() throws InterruptedException {
-
-		System.setProperty("webdriver.chrome.driver", "D:\\Chromedriver\\chromedriver.exe");
-
-		driver = new ChromeDriver();
-
-		// 1 - Maximize browser
-		driver.manage().window().maximize();
-
-		// 2 - Navigate to url
+	public void setUp() throws InterruptedException {
+		super.setUp();
+		testDataManager = TestDataManager.getInstance();
+		// Navigate to url
 		driver.navigate().to("https://nguyetviet.io.vn");
 
 		// Wait web load
 		Thread.sleep(2000);
-
 	}
 
 	//View product logout
@@ -85,12 +80,13 @@ public class tc_viewProductDetail {
 	//View product login
 	@Test
 	public void ct2_viewProductLogin() throws InterruptedException {
+		Map<String, String> accountData = testDataManager.getAccountData("acc2_product");
 		
 		WebElement btn_home_login = driver.findElement(By.xpath("//a[@href='/auth/login']"));
 		btn_home_login.click();
 		Thread.sleep(2000);
 		
-		login("nguyenyen2003+7@gmail.com", "Yen12345");
+		login(accountData.get("Email"), accountData.get("Password"));
 		btn_Login_click();
 		Thread.sleep(1000);
 		WebElement btn_closeMessage = driver.findElement(By.xpath("//button[@aria-label='close']//*[name()='svg']"));

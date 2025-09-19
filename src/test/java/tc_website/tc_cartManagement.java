@@ -3,7 +3,9 @@ package tc_website;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sound.midi.Track;
 
@@ -11,7 +13,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
@@ -20,9 +21,14 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import tc_website.utils.TestDataManager;
 
-public class tc_cartManagement {
-	
+/**
+ * Test OK
+ */
+
+public class tc_cartManagement extends BaseTest {
+	private TestDataManager testDataManager;
 	public void login(String mail, String pw) {
 		// Find and fill name
 		WebElement inputEmail = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[3]/div[2]/form[1]/div[1]/div[1]/div[1]/input[1]"));
@@ -46,21 +52,12 @@ public class tc_cartManagement {
         return value;
 	}
 	
-	WebDriver driver = null;
-	
-	@BeforeTest
-	public void beforeTest() throws InterruptedException {
-
-		// Use system property if set, otherwise use default path
-		String chromeDriverPath = System.getProperty("chrome.driver.path", "D:\\Chromedriver\\chromedriver.exe");
-		System.setProperty("webdriver.chrome.driver", chromeDriverPath);
-
-		driver = new ChromeDriver();
-
-		// 1 - Maximize browser
-		driver.manage().window().maximize();
-
-		// 2 - Navigate to URL
+	@Override
+	@BeforeMethod
+	public void setUp() throws InterruptedException {
+		super.setUp();
+		testDataManager = TestDataManager.getInstance();
+		// Navigate to URL
 		driver.navigate().to("https://nguyetviet.io.vn");
 
 		// Wait web load
@@ -132,12 +129,13 @@ public class tc_cartManagement {
 	//View cart without products
 	@Test(priority = 1,enabled = true)
 	public void gh1_viewEmptyCart() throws InterruptedException {
-		
+
 		WebElement btn_home_login = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/header[1]/div[1]/div[3]/a[2]/span[1]/*[name()='svg'][1]"));
 		btn_home_login.click();
 		Thread.sleep(2000);
-		
-		login("nguyenyen2003+4@gmail.com", "Yen12345");
+
+		Map<String, String> accountData = testDataManager.getAccountData("acc1_primary");
+		login(accountData.get("Email"), accountData.get("Password"));
 		btn_Login_click();
 		Thread.sleep(1000);
 		WebElement btn_closeMessage = driver.findElement(By.xpath("//button[@aria-label='close']//*[name()='svg']"));
@@ -148,22 +146,34 @@ public class tc_cartManagement {
 		WebElement btn_home_cart = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/header[1]/div[1]/div[3]/div[1]/button[1]/span[1]"));
 		btn_home_cart.click();
 		Thread.sleep(2000);
-		
+
 		WebElement btn_cart = driver.findElement(By.xpath("//span[contains(text(),'Giỏ hàng')]"));
 		btn_cart.click();
 		Thread.sleep(2000);
-		
+
 		WebElement messageEmptyCart = driver.findElement(By.cssSelector(".text-center.text-gray-500"));
 		String actualMessageString = messageEmptyCart.getText();
 		String expectedMessageString = "Giỏ hàng của bạn đang trống";
 		Assert.assertEquals(actualMessageString, expectedMessageString);
 	}
-	
+
 	//Add product to cart
 	@Test(priority = 2,enabled = true)
 	public void gh2_addCart() throws InterruptedException {
-		
-		WebElement btn_product = driver.findElement(By.xpath("//span[contains(text(),'XEM THÊM SẢN PHẨM')]"));
+
+		WebElement btn_home_login = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/header[1]/div[1]/div[3]/a[2]/span[1]/*[name()='svg'][1]"));
+		btn_home_login.click();
+		Thread.sleep(2000);
+
+		Map<String, String> accountData = testDataManager.getAccountData("acc1_primary");
+		login(accountData.get("Email"), accountData.get("Password"));
+		btn_Login_click();
+		Thread.sleep(1000);
+		WebElement btn_closeMessage = driver.findElement(By.xpath("//button[@aria-label='close']//*[name()='svg']"));
+		btn_closeMessage.click();
+		Thread.sleep(1000);
+
+		WebElement btn_product = driver.findElement(By.xpath("//span[contains(text(),'SẢN PHẨM')]"));
 		btn_product.click();
 		Thread.sleep(2000);
 
@@ -213,7 +223,21 @@ public class tc_cartManagement {
 	//View cart has product
 	@Test(priority = 3,enabled = true)
 	public void gh4_viewCartHasProduct() throws InterruptedException {
-		Thread.sleep(3000);
+
+
+		WebElement btn_home_login = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/header[1]/div[1]/div[3]/a[2]/span[1]/*[name()='svg'][1]"));
+		btn_home_login.click();
+		Thread.sleep(2000);
+
+		Map<String, String> accountData = testDataManager.getAccountData("acc1_primary");
+		login(accountData.get("Email"), accountData.get("Password"));
+		btn_Login_click();
+		Thread.sleep(1000);
+		WebElement btn_closeMessage = driver.findElement(By.xpath("//button[@aria-label='close']//*[name()='svg']"));
+		btn_closeMessage.click();
+		Thread.sleep(1000);
+
+
 		// Find elements
 		WebElement btn_home_cart = driver.findElement(
 				By.xpath("/html[1]/body[1]/div[1]/div[2]/header[1]/div[1]/div[3]/div[1]/button[1]"));
@@ -314,7 +338,7 @@ public class tc_cartManagement {
 	}
 	
 	
-	@AfterTest
+	@AfterMethod
 	public void afterTest() throws InterruptedException {
 
 		Thread.sleep(2000);

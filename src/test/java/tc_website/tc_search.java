@@ -1,21 +1,27 @@
 package tc_website;
 
-import java.lang.invoke.StringConcatFactory;
 import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
-public class tc_search {
+public class tc_search extends BaseTest {
 
-	WebDriver driver = null;
+	@Override
+	@BeforeMethod
+	public void setUp() throws InterruptedException {
+		super.setUp();
+		
+		// Navigate to URL
+		driver.navigate().to("https://nguyetviet.io.vn");
+
+		// Wait web load
+		Thread.sleep(2000);
+	}
 	
 	public void btnHuy() throws InterruptedException {
 		WebElement btn_HuyElement = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/main[1]/div[1]/form[1]/div[1]/div[1]/div[1]/div[1]/div[5]/button[2]/span[1]"));
@@ -33,32 +39,13 @@ public class tc_search {
         return value;
 	}
 	
-	
-	@BeforeTest
-	public void beforeTest() throws InterruptedException {
-
-		System.setProperty("webdriver.chrome.driver", "D:\\Chromedriver\\chromedriver.exe");
-
-		driver = new ChromeDriver();
-
-		// 1 - Maximize browser
-		driver.manage().window().maximize();
-
-		// 2 - Navigate to URL
-		driver.navigate().to("https://nguyetviet.io.vn");
-
-		// Wait web load
-		Thread.sleep(2000);
+	//Search by keyword -> has products 
+	@Test(priority = 0,enabled = true)
+	public void tk1_searchByCorrectName() throws InterruptedException {
 		
 		WebElement btn_home_product = driver.findElement(By.xpath("//a[@href='/products']"));
 		btn_home_product.click();
 		Thread.sleep(2000);
-
-	}
-	
-	//Search by keyword -> has products 
-	@Test(priority = 0,enabled = true)
-	public void tk1_searchByCorrectName() throws InterruptedException {
 		
 		WebElement txtSearchByName = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/main[1]/div[1]/form[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/input[1]"));
 		String keySearch = "bánh dẻo";
@@ -159,7 +146,7 @@ public class tc_search {
 		 Thread.sleep(3000);
 	}
 	
-	@AfterTest
+	@AfterMethod
 	public void afterTest() throws InterruptedException {
 		Thread.sleep(2000);
 		driver.quit();

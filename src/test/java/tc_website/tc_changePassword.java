@@ -1,9 +1,10 @@
 package tc_website;
 
+import java.util.Map;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
@@ -11,7 +12,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-public class tc_changePassword {
+
+public class tc_changePassword extends BaseTest {
 	
 
 	public void login(String mail, String pw) {
@@ -45,21 +47,12 @@ public class tc_changePassword {
 		inputCfNewPassword.sendKeys(cfNewPw);
 	}
 
-	
-	WebDriver driver = null;
-	@BeforeTest
-	public void beforeTest() throws InterruptedException {
-
-		// Use system property if set, otherwise use default path
-String chromeDriverPath = System.getProperty("chrome.driver.path", "D:\\Chromedriver\\chromedriver.exe");
-System.setProperty("webdriver.chrome.driver", chromeDriverPath);
-
-		driver = new ChromeDriver();
-
-		// 1 - Maximize browser
-		driver.manage().window().maximize();
-
-		// 2 - Navigate to url
+	@Override
+	@BeforeMethod
+	public void setUp() throws InterruptedException {
+		super.setUp();
+		
+		// Navigate to url
 		driver.navigate().to("https://nguyetviet.io.vn/auth/login");
 
 		// Wait web load
@@ -109,7 +102,7 @@ System.setProperty("webdriver.chrome.driver", chromeDriverPath);
 		Thread.sleep(1000);
 	}
 
-	@AfterTest
+	@AfterMethod
 	public void afterTest() throws InterruptedException {
 
 		Thread.sleep(2000);

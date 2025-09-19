@@ -10,6 +10,7 @@ import java.util.Map;
 
 /**
  * Refactored Registration Test Class using Data-Driven Testing
+ * Test OK
  */
 public class RegistrationTestDataDriven extends BaseTest {
 

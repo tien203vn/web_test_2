@@ -1,15 +1,18 @@
 package tc_website;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import tc_website.base.BaseTest;
+import tc_website.utils.TestDataManager;
 
-public class tc_login {
+import java.util.Map;
+
+public class tc_login extends BaseTest {
+	
+	private TestDataManager testDataManager = TestDataManager.getInstance();
 
 	public void login(String mail, String pw) {
 		// Find and fill name
@@ -27,38 +30,25 @@ public class tc_login {
 		btnLoginElement.click();
 		Thread.sleep(2000);
 	}
-
-	WebDriver driver = null;
-
+	
 	@BeforeMethod
-	public void beforeMethod() throws InterruptedException {
-
-		System.setProperty("webdriver.chrome.driver", "D:\\Chromedriver\\chromedriver.exe");
-
-		driver = new ChromeDriver();
-
-		// 1 - Maximize browser
-		driver.manage().window().maximize();
-
-		// 2 - Navigate to url
+	public void setupLoginTest() throws InterruptedException {
+		// 1 - Navigate to homepage 
 		driver.navigate().to("https://nguyetviet.io.vn");
-
-		// Wait web load
 		Thread.sleep(2000);
 
-		// Find elements
+		// 2 - Navigate to login page
 		WebElement btn_home_login = driver.findElement(By.xpath("//a[@href='/auth/login']"));
-
 		btn_home_login.click();
-
 		Thread.sleep(2000);
 	}
 
 	// Login successfully
 	@Test(priority = 0, enabled = true)
 	public void dn1_loginSuccessfully() throws InterruptedException {
+		Map<String, String> testData = testDataManager.getLoginData("tk1_loginSuccess");
 
-		login("nguyenyen2003+15@gmail.com", "Yen12345");
+		login(testData.get("Email"), testData.get("Password"));
 		Thread.sleep(2000);
 		btn_Login_click();
 		Assert.assertTrue(driver.findElement(By.xpath("//div[contains(text(),'Đăng nhập thành công')]")).isDisplayed());
@@ -67,7 +57,9 @@ public class tc_login {
 	// Login with wrong Email
 	@Test(priority = 1, enabled = true)
 	public void dn2_loginWithWrongEmail() throws InterruptedException {
-		login("nguyenyen200@gmail.com", "Yen12345");
+		Map<String, String> testData = testDataManager.getLoginData("tk2_loginInvalidEmail");
+		
+		login(testData.get("Email"), testData.get("Password"));
 		Thread.sleep(2000);
 		btn_Login_click();
 		Assert.assertTrue(driver
@@ -79,7 +71,9 @@ public class tc_login {
 	// Login with wrong Password
 	@Test(priority = 2, enabled = true)
 	public void dn3_loginWithWrongPassword() throws InterruptedException {
-		login("nguyenyen2003+15@gmail.com", "Yen1234566666");
+		Map<String, String> testData = testDataManager.getLoginData("tk3_loginInvalidPassword");
+		
+		login(testData.get("Email"), testData.get("Password"));
 		Thread.sleep(2000);
 		btn_Login_click();
 		Assert.assertTrue(driver
@@ -146,14 +140,6 @@ public class tc_login {
 				.findElement(By
 						.xpath("//div[contains(text(),'Mật khẩu phải chứa 1 ký tự và 1 số')]"))
 				.isDisplayed());
-	}
-
-	@AfterMethod
-	public void afterMethod() throws InterruptedException {
-
-		Thread.sleep(2000);
-		driver.quit();
-
 	}
 
 }

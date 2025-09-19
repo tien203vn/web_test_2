@@ -5,15 +5,16 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
-public class tc_payment {
-	
+import org.testng.annotations.*;
+import tc_website.utils.TestDataManager;
+
+import java.util.Map;
+
+public class tc_payment extends BaseTest {
+	private TestDataManager testDataManager;
 	public void login(String mail, String pw) {
 		// Find and fill name
 		WebElement inputEmail = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[3]/div[2]/form[1]/div[1]/div[1]/div[1]/input[1]"));
@@ -103,19 +104,12 @@ public class tc_payment {
 		Thread.sleep(2000);
 	}
 	
-	WebDriver driver = null;
-	
-	@BeforeTest
-	public void beforeTest() throws InterruptedException {
-
-		System.setProperty("webdriver.chrome.driver", "D:\\Chromedriver\\chromedriver.exe");
-
-		driver = new ChromeDriver();
-
-		// 1 - Maximize browser
-		driver.manage().window().maximize();
-
-		// 2 - Navigate to URL
+	@Override
+	@BeforeMethod
+	public void setUp() throws InterruptedException {
+		super.setUp();
+		testDataManager = TestDataManager.getInstance();
+		// Navigate to URL
 		driver.navigate().to("https://nguyetviet.io.vn");
 
 		// Wait web load
@@ -127,11 +121,14 @@ public class tc_payment {
 	//Pay in cash
 	@Test(priority = 0, enabled = true)
 	public void tt1_payInCash() throws InterruptedException {
+		Map<String, String> testData = testDataManager.getPaymentData("tk3_paymentCOD");
+		Map<String, String> accountData = testDataManager.getAccountData("acc1_primary");
+		
 		WebElement btn_home_login = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/header[1]/div[1]/div[3]/a[2]/span[1]/*[name()='svg'][1]"));
 		btn_home_login.click();
 		Thread.sleep(2000);
 		
-		login("nguyenyen2003+16@gmail.com", "Yen12345");
+		login(accountData.get("Email"), accountData.get("Password"));
 		btn_Login_click();
 		Thread.sleep(1000);
 		WebElement btn_closeMessage = driver.findElement(By.xpath("//button[@aria-label='close']//*[name()='svg']"));
@@ -147,7 +144,7 @@ public class tc_payment {
 		btn_pay.click();
 		Thread.sleep(2000);
 		
-		thongTinThanhToan("01234567899", "Yen Nguyen", "01234567899", 1);
+		thongTinThanhToan(testData.get("Phone"), testData.get("FullName"), testData.get("Phone"), 1);
 		Thread.sleep(2000);
 		
 		btnThanhToan();
@@ -176,6 +173,7 @@ public class tc_payment {
 	// Pay with Momo
 	@Test(priority = 1, enabled = true)
 	public void tt2_payWithMomo() throws InterruptedException {
+		Map<String, String> testData = testDataManager.getPaymentData("tk2_paymentInvalidCard");
 		
 		WebElement btn_home_product = driver.findElement(By.xpath("//a[@href='/products']"));
 		btn_home_product.click();
@@ -210,7 +208,7 @@ public class tc_payment {
 		btn_pay.click();
 		Thread.sleep(2000);
 
-		thongTinThanhToan("01234567899", "Yen Nguyen", "01234567899", 2);
+		thongTinThanhToan(testData.get("Phone"), testData.get("FullName"), testData.get("Phone"), 2);
 		Thread.sleep(2000);
 
 		String firstTab = driver.getWindowHandle();
@@ -244,6 +242,7 @@ public class tc_payment {
 	// Pay with Zalopay
 	@Test(priority = 2, enabled = true)
 	public void tt3_payWithZalopay() throws InterruptedException {
+		Map<String, String> testData = testDataManager.getPaymentData("tk1_paymentSuccess");
 
 		WebElement btn_home_product = driver.findElement(By.xpath("//a[@href='/products']"));
 		btn_home_product.click();
@@ -280,7 +279,7 @@ public class tc_payment {
 		btn_pay.click();
 		Thread.sleep(2000);
 
-		thongTinThanhToan("01234567899", "Yen Nguyen", "01234567899", 3);
+		thongTinThanhToan(testData.get("Phone"), testData.get("FullName"), testData.get("Phone"), 3);
 		Thread.sleep(2000);
 
 		String firstTab = driver.getWindowHandle();
@@ -317,7 +316,7 @@ public class tc_payment {
 		Thread.sleep(3000);
 	}
 	
-	@AfterTest
+	@AfterMethod
 	public void afterTest() throws InterruptedException {
 		
 		// View your orders

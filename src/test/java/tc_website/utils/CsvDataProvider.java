@@ -69,7 +69,18 @@ public class CsvDataProvider {
         List<Map<String, String>> allData = getAllData();
         
         for (Map<String, String> row : allData) {
-            if (testCaseId.equals(row.get("TestCase")) || testCaseId.equals(row.get("testcase"))) {
+            // Check common identifier columns
+            if (testCaseId.equals(row.get("TestCase")) || 
+                testCaseId.equals(row.get("testcase")) ||
+                testCaseId.equals(row.get("AccountID")) ||
+                testCaseId.equals(row.get("accountid")) ||
+                testCaseId.equals(row.get("ID")) ||
+                testCaseId.equals(row.get("id"))) {
+                return row;
+            }
+            
+            // If no specific identifier column found, check first column
+            if (!headers.isEmpty() && testCaseId.equals(row.get(headers.get(0)))) {
                 return row;
             }
         }

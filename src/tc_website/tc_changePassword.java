@@ -1,17 +1,47 @@
 package tc_website;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import tc_website.utils.TestDataManager;
 
-public class tc_changePassword {
+import java.util.Map;
+
+public class tc_changePassword extends BaseTest {
+	
+	private TestDataManager testDataManager;
+
+	@BeforeMethod
+	@Override
+	public void setUp() throws InterruptedException {
+		super.setUp();
+		testDataManager = TestDataManager.getInstance();
+		
+		// Get default login credentials for accessing change password page
+		Map<String, String> loginData = testDataManager.getChangePasswordData("tk1_changePasswordSuccess");
+		
+		// Navigate to login page and login
+		driver.navigate().to("https://nguyetviet.io.vn/auth/login");
+		Thread.sleep(2000);
+		
+		login(loginData.get("LoginEmail"), loginData.get("LoginPassword"));
+		btn_Login_click();
+		Thread.sleep(1000);
+		WebElement btn_closeMessage = driver.findElement(By.xpath("//button[@aria-label='close']//*[name()='svg']"));
+		btn_closeMessage.click();
+		Thread.sleep(1000);
+		
+		WebElement btn_home_profile = driver.findElement(By.xpath("//a[@href='/profile/me']"));
+		btn_home_profile.click();
+		Thread.sleep(2000);
+
+		WebElement btn_navigatePageChangePasswordElement = driver
+				.findElement(By.xpath("//span[contains(text(),'Đổi mật khẩu')]"));
+		btn_navigatePageChangePasswordElement.click();
+		Thread.sleep(2000);
+	}
 	
 
 	public void login(String mail, String pw) {
@@ -45,49 +75,11 @@ public class tc_changePassword {
 		inputCfNewPassword.sendKeys(cfNewPw);
 	}
 
-	
-	WebDriver driver = null;
-	@BeforeTest
-	public void beforeTest() throws InterruptedException {
-
-		System.setProperty("webdriver.chrome.driver", "D:\\Chromedriver\\chromedriver.exe");
-
-		driver = new ChromeDriver();
-
-		// 1 - Maximize browser
-		driver.manage().window().maximize();
-
-		// 2 - Navigate to url
-		driver.navigate().to("https://nguyetviet.io.vn/auth/login");
-
-		// Wait web load
-		Thread.sleep(2000);
-
-		login("nguyenyen2003+15@gmail.com", "Yen12345");
-		btn_Login_click();
-		Thread.sleep(1000);
-		WebElement btn_closeMessage = driver.findElement(By.xpath("//button[@aria-label='close']//*[name()='svg']"));
-		btn_closeMessage.click();
-		Thread.sleep(1000);
-
-		// Find elements
-		WebElement btn_home_profile = driver.findElement(By.xpath("//a[@href='/profile/me']"));
-
-		btn_home_profile.click();
-
-		Thread.sleep(1000);
-
-		WebElement btn_navigatePageChangePasswordElement = driver
-				.findElement(By.xpath("//span[contains(text(),'Đổi mật khẩu')]"));
-		btn_navigatePageChangePasswordElement.click();
-		Thread.sleep(2000);
-
-	}
-
 	@Test(priority = 1, enabled = true)
 	public void mk2_changePasswordSuccessfull() throws InterruptedException {
+		Map<String, String> testData = testDataManager.getChangePasswordData("tk1_changePasswordSuccess");
 		
-		changePassword("Yen12345", "Yen54321", "Yen54321");
+		changePassword(testData.get("OldPassword"), testData.get("NewPassword"), testData.get("ConfirmPassword"));
 		WebElement btn_submitChangePw = driver.findElement(By.xpath("(//span[@class='text-inherit'][contains(text(),'Lưu thay đổi')])[2]"));
 		btn_submitChangePw.click();
 		Thread.sleep(2000);
@@ -96,8 +88,9 @@ public class tc_changePassword {
 	
 	@Test(priority = 0, enabled = true)
 	public void mk1_wrongCurrentPassword() throws InterruptedException {
+		Map<String, String> testData = testDataManager.getChangePasswordData("tk2_changePasswordWrongCurrent");
 		
-		changePassword("Yen54321", "Yen12345", "Yen12345");
+		changePassword(testData.get("OldPassword"), testData.get("NewPassword"), testData.get("ConfirmPassword"));
 		WebElement btn_submitChangePw = driver.findElement(By.xpath("(//span[@class='text-inherit'][contains(text(),'Lưu thay đổi')])[2]"));
 		btn_submitChangePw.click();
 		Thread.sleep(2000);
@@ -105,14 +98,6 @@ public class tc_changePassword {
 		WebElement btnClosElement = driver.findElement(By.xpath("//button[@aria-label='close']"));
 		btnClosElement.click();
 		Thread.sleep(1000);
-	}
-
-	@AfterTest
-	public void afterTest() throws InterruptedException {
-
-		Thread.sleep(2000);
-		driver.quit();
-
 	}
 
 }
