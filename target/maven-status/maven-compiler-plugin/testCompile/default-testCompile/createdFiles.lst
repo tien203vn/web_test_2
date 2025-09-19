@@ -1,0 +1,11 @@
+tc_website\tc_updateProfile.class
+tc_website\tc_changePassword.class
+tc_website\tc_viewProductDetail.class
+tc_website\tc_logout.class
+tc_website\tc_login.class
+tc_website\tc_search.class
+tc_website\BaseTest.class
+tc_website\tc_dky.class
+tc_website\tc_cartManagement.class
+tc_website\tc_viewProfile.class
+tc_website\tc_payment.class
