@@ -181,3 +181,14 @@ public void testLogin() {
 
 ---
 **Result**: Dự án đã được successfully refactor để hỗ trợ Data-Driven Testing với CSV và Excel!
+
+
+
+
+
+mvn clean test "-Dsurefire.suiteXmlFiles=testng-simple.xml"
+
+
+
+
+

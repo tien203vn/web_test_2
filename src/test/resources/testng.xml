@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="Website Testing Suite" parallel="false">
     
     <!-- Test with Chrome (default) -->
     <test name="Chrome Tests" preserve-order="true">
         <parameter name="browser" value="chrome"/>
         <classes>
-            <!-- Original hardcoded tests -->
-            <class name="tc_website.tc_login"/>
-            <class name="tc_website.tc_dky"/>
-            <class name="tc_website.tc_logout"/>
-            <class name="tc_website.tc_changePassword"/>
-            <class name="tc_website.tc_updateProfile"/>
-            <class name="tc_website.tc_viewProfile"/>
-            <class name="tc_website.tc_search"/>
-            <class name="tc_website.tc_viewProductDetail"/>
+            <!-- Current working tests -->
             <class name="tc_website.tc_cartManagement"/>
+            <class name="tc_website.tc_changePassword"/>
+            <class name="tc_website.tc_login"/>
+            <class name="tc_website.tc_logout"/>
             <class name="tc_website.tc_payment"/>
+            <class name="tc_website.tc_search"/>
+            <class name="tc_website.tc_updateProfile"/>
+            <class name="tc_website.tc_viewProductDetail"/>
+            <class name="tc_website.tc_viewProfile"/>
         </classes>
     </test>
     
@@ -24,17 +24,7 @@
         <parameter name="browser" value="chrome"/>
         <classes>
             <class name="tc_website.LoginTestDataDriven"/>
-            <class name="tc_website.RegistrationTestDataDriven"/>
         </classes>
     </test>
-    
-    <!-- Uncomment to test with Firefox
-    <test name="Firefox Tests">
-        <parameter name="browser" value="firefox"/>
-        <classes>
-            <class name="tc_website.tc_login"/>
-        </classes>
-    </test>
-    -->
     
 </suite>

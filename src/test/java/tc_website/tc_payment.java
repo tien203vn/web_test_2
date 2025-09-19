@@ -173,6 +173,19 @@ public class tc_payment extends BaseTest {
 	// Pay with Momo
 	@Test(priority = 1, enabled = true)
 	public void tt2_payWithMomo() throws InterruptedException {
+		//đăng nhập
+		WebElement btn_home_login = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/header[1]/div[1]/div[3]/a[2]/span[1]/*[name()='svg'][1]"));
+		btn_home_login.click();
+		Thread.sleep(2000);
+
+		Map<String, String> accountData = testDataManager.getAccountData("acc1_primary");
+		login(accountData.get("Email"), accountData.get("Password"));
+		btn_Login_click();
+		Thread.sleep(1000);
+		WebElement btn_closeMessageC = driver.findElement(By.xpath("//button[@aria-label='close']//*[name()='svg']"));
+		btn_closeMessageC.click();
+		Thread.sleep(1000);
+
 		Map<String, String> testData = testDataManager.getPaymentData("tk2_paymentInvalidCard");
 		
 		WebElement btn_home_product = driver.findElement(By.xpath("//a[@href='/products']"));
@@ -242,6 +255,18 @@ public class tc_payment extends BaseTest {
 	// Pay with Zalopay
 	@Test(priority = 2, enabled = true)
 	public void tt3_payWithZalopay() throws InterruptedException {
+		WebElement btn_home_login = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/header[1]/div[1]/div[3]/a[2]/span[1]/*[name()='svg'][1]"));
+		btn_home_login.click();
+		Thread.sleep(2000);
+
+		Map<String, String> accountData = testDataManager.getAccountData("acc1_primary");
+		login(accountData.get("Email"), accountData.get("Password"));
+		btn_Login_click();
+		Thread.sleep(1000);
+		WebElement btn_closeMessageC = driver.findElement(By.xpath("//button[@aria-label='close']//*[name()='svg']"));
+		btn_closeMessageC.click();
+		Thread.sleep(1000);
+
 		Map<String, String> testData = testDataManager.getPaymentData("tk1_paymentSuccess");
 
 		WebElement btn_home_product = driver.findElement(By.xpath("//a[@href='/products']"));
@@ -316,18 +341,18 @@ public class tc_payment extends BaseTest {
 		Thread.sleep(3000);
 	}
 	
-	@AfterMethod
-	public void afterTest() throws InterruptedException {
-		
-		// View your orders
-		WebElement btn_home_profile = driver.findElement(By.xpath("//a[@href='/profile/me']"));
-		btn_home_profile.click();
-		Thread.sleep(1000);
-		
-		WebElement viewOrders = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/main[1]/aside[1]/nav[1]/div[2]/ul[1]/li[1]/a[1]/span[2]"));
-		viewOrders.click();
-		Thread.sleep(6000);
-		driver.quit();
-	}
+//	@AfterMethod
+//	public void afterTest() throws InterruptedException {
+//
+//		// View your orders
+//		WebElement btn_home_profile = driver.findElement(By.xpath("//a[@href='/profile/me']"));
+//		btn_home_profile.click();
+//		Thread.sleep(1000);
+//
+//		WebElement viewOrders = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/main[1]/aside[1]/nav[1]/div[2]/ul[1]/li[1]/a[1]/span[2]"));
+//		viewOrders.click();
+//		Thread.sleep(6000);
+//		driver.quit();
+//	}
 
 }

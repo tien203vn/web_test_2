@@ -74,6 +74,20 @@
             <artifactId>opencsv</artifactId>
             <version>5.7.1</version>
         </dependency>
+
+        <!-- Apache HttpClient Core - Required for Selenium -->
+        <dependency>
+            <groupId>org.apache.httpcomponents.core5</groupId>
+            <artifactId>httpcore5</artifactId>
+            <version>5.2.2</version>
+        </dependency>
+
+        <!-- Apache HttpClient - Required for Selenium -->
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>5.2.1</version>
+        </dependency>
     </dependencies>
     
     <!-- Build Configuration -->
@@ -96,9 +110,28 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
+                    <!-- Enable TestNG reports -->
+                    <useFile>true</useFile>
+                    <reportFormat>xml</reportFormat>
+                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                    <!-- TestNG specific properties -->
+                    <properties>
+                        <property>
+                            <name>usedefaultlisteners</name>
+                            <value>true</value>
+                        </property>
+                        <property>
+                            <name>reporter</name>
+                            <value>org.testng.reporters.EmailableReporter2</value>
+                        </property>
+                        <property>
+                            <name>outputdir</name>
+                            <value>test-output</value>
+                        </property>
+                    </properties>
                     <!-- Use TestNG XML suite file -->
                     <suiteXmlFiles>
-                        <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
+                        <suiteXmlFile>testng-all.xml</suiteXmlFile>
                     </suiteXmlFiles>
                     <!-- System properties for browser selection -->
                     <systemProperties>
@@ -107,6 +140,29 @@
                             <value>${browser}</value>
                         </property>
                     </systemProperties>
+                </configuration>
+            </plugin>
+
+            <!-- Maven Surefire Report Plugin for better HTML reports -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <outputDirectory>target/surefire-reports</outputDirectory>
+                </configuration>
+            </plugin>
+
+            <!-- TestNG Plugin for generating TestNG reports -->
+            <plugin>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>7.4.0</version>
+                <configuration>
+                    <outputDirectory>test-output</outputDirectory>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>testng-simple.xml</suiteXmlFile>
+                    </suiteXmlFiles>
                 </configuration>
             </plugin>
         </plugins>
