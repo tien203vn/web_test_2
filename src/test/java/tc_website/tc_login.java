@@ -8,8 +8,13 @@ import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import tc_website.utils.TestDataManager;
+
+import java.util.Map;
 
 public class tc_login extends BaseTest {
+
+	private TestDataManager testDataManager;
 
 	public void login(String mail, String pw) {
 		// Find and fill name
@@ -33,6 +38,9 @@ public class tc_login extends BaseTest {
 	public void setUp() throws InterruptedException {
 		super.setUp();
 		
+		// Initialize test data manager
+		testDataManager = TestDataManager.getInstance();
+		
 		// Navigate to login page after base setup
 		WebElement btnHomeLogin = driver.findElement(By.xpath("//a[@href='/auth/login']"));
 		btnHomeLogin.click();
@@ -42,8 +50,10 @@ public class tc_login extends BaseTest {
 	// Login successfully
 	@Test(priority = 0, enabled = true)
 	public void dn1_loginSuccessfully() throws InterruptedException {
-
-		login("nguyenyen2003+15@gmail.com", "Yen12345");
+		// Get test data from CSV file
+		Map<String, String> testData = testDataManager.getLoginData("dn1_loginSuccessfully");
+		
+		login(testData.get("Email"), testData.get("Password"));
 		Thread.sleep(2000);
 		btn_Login_click();
 		Assert.assertTrue(driver.findElement(By.xpath("//div[contains(text(),'Đăng nhập thành công')]")).isDisplayed());

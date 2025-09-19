@@ -5,6 +5,7 @@
     <test name="Chrome Tests" preserve-order="true">
         <parameter name="browser" value="chrome"/>
         <classes>
+            <!-- Original hardcoded tests -->
             <class name="tc_website.tc_login"/>
             <class name="tc_website.tc_dky"/>
             <class name="tc_website.tc_logout"/>
@@ -15,6 +16,15 @@
             <class name="tc_website.tc_viewProductDetail"/>
             <class name="tc_website.tc_cartManagement"/>
             <class name="tc_website.tc_payment"/>
+        </classes>
+    </test>
+    
+    <!-- Data-Driven Tests -->
+    <test name="Data-Driven Tests" preserve-order="true">
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="tc_website.LoginTestDataDriven"/>
+            <class name="tc_website.RegistrationTestDataDriven"/>
         </classes>
     </test>
     
